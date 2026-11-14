@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Secrets
+.env
+server/.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Server data
+server/scans/*
+!server/scans/.gitkeep
+server/*.db
+server/*.db-journal
+server/static/app/
+
+# Flutter / Dart (app/.gitignore covers the rest)
+app/build/
+app/.dart_tool/
+app/ios/Pods/
+app/ios/.symlinks/
+app/ios/Flutter/ephemeral/
+
+# Editors
+.idea/
+.vscode/
+
+# Database backups (real names and phone numbers)
+server/*.db.backup
