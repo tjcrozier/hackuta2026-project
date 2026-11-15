@@ -1,4 +1,4 @@
-"""Black Box server: workers, pings, events, Rescue Mode, live snapshot."""
+"""Cycl0ps server: workers, pings, events, Rescue Mode, live snapshot."""
 
 import asyncio
 import contextlib
@@ -13,12 +13,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+import athena
 import config
 import db
 import demo
 import rules
 import scans
 from models import (
+    AthenaBody,
     CheckinBody,
     EventBody,
     HazardBody,
@@ -55,7 +57,7 @@ async def demo_keep_alive() -> None:
             await broadcast()
 
 
-app = FastAPI(title="Black Box", lifespan=lifespan)
+app = FastAPI(title="Cycl0ps", lifespan=lifespan)
 # The web dashboard may run from another address while developing (flutter run -d chrome).
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"],
                    allow_headers=["*"])
@@ -98,7 +100,7 @@ async def start_rescue(reason: str) -> dict[str, Any]:
     sender = get_sender()
     for worker in db.active_workers():
         await sender.send(worker["phone"],
-                          f"BLACK BOX EMERGENCY. {worker['name']}, are you OK? "
+                          f"CYCL0PS EMERGENCY. {worker['name']}, are you OK? "
                           "Reply 1 if safe, 2 if you need help.")
     return db.rescue_dict(rescue)
 
@@ -239,7 +241,7 @@ async def scan_upload(request: Request) -> dict[str, Any]:
     # Text the supervisor and the workers on that floor about each new hazard.
     sender = get_sender()
     for hazard in result["hazards"]:
-        await sender.send(config.SUPERVISOR_PHONE, f"BLACK BOX HAZARD: {hazard['text']}")
+        await sender.send(config.SUPERVISOR_PHONE, f"CYCL0PS HAZARD: {hazard['text']}")
         await warn_floor(hazard)
     await broadcast()
     return result
@@ -250,7 +252,7 @@ async def warn_floor(hazard: dict[str, Any]) -> int:
     workers = db.workers_on_floor(hazard["floor"])
     sender = get_sender()
     for worker in workers:
-        await sender.send(worker["phone"], f"BLACK BOX WARNING: {hazard['text']}")
+        await sender.send(worker["phone"], f"CYCL0PS WARNING: {hazard['text']}")
     return len(workers)
 
 
@@ -326,6 +328,16 @@ async def mesh_upload(body: MeshUploadBody) -> dict[str, int]:
 @app.get("/state")
 def state() -> dict[str, Any]:
     return db.snapshot()
+
+
+@app.post("/athena/chat")
+async def athena_chat(body: AthenaBody) -> dict[str, str]:
+    """Athena's reply to the chat so far, using only what this role may know about the site."""
+    if body.role == "worker":
+        worker_or_404(body.worker_id or "")
+    messages = [turn.model_dump() for turn in body.messages]
+    text, source = await athena.reply(messages, db.snapshot(), body.role, body.worker_id)
+    return {"reply": text, "source": source}
 
 
 @app.post("/demo/reset")

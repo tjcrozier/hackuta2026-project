@@ -112,8 +112,8 @@ def test_second_scan_with_new_opening_creates_hazard_and_texts(client, join):
 
     texts = {(m["to_or_from"], m["body"]) for m in state["messages"]}
     assert texts == {
-        ("+10000000000", "BLACK BOX HAZARD: New opening on Floor 3. Check guardrails."),
-        ("+15550000001", "BLACK BOX WARNING: New opening on Floor 3. Check guardrails."),
+        ("+10000000000", "CYCL0PS HAZARD: New opening on Floor 3. Check guardrails."),
+        ("+15550000001", "CYCL0PS WARNING: New opening on Floor 3. Check guardrails."),
     }
 
 

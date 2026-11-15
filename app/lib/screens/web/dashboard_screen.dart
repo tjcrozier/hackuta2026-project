@@ -5,6 +5,7 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 import '../../models/snapshot.dart';
 import '../../theme.dart';
 import '../../util.dart';
+import '../../widgets/athena_dock.dart';
 import '../../widgets/floor_map.dart';
 import '../../widgets/floor_tabs.dart';
 import '../../widgets/hold_button.dart';
@@ -45,7 +46,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final snapshot = live.snapshot;
       return Scaffold(
         body: SafeArea(
-          child: snapshot == null
+          child: AthenaDock(
+            api: live.api,
+            role: 'supervisor',
+            child: snapshot == null
               ? Center(
                   child: Text(
                     live.offline
@@ -68,6 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                 ),
+          ),
         ),
       );
     },
@@ -193,7 +198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Black Box',
+                  'Cycl0ps', semanticsLabel: 'Cyclops',
                   style: body(13, color: BB.muted, weight: FontWeight.w600),
                 ),
                 Text(snapshot.siteName, style: heading(24)),

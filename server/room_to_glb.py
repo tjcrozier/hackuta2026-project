@@ -94,7 +94,7 @@ def room_to_glb(room: dict[str, Any]) -> bytes:
 
     binary = bytearray()
     gltf: dict[str, Any] = {
-        "asset": {"version": "2.0", "generator": "Black Box"},
+        "asset": {"version": "2.0", "generator": "Cycl0ps"},
         "scene": 0, "scenes": [{"nodes": []}], "nodes": [], "meshes": [], "materials": [],
         "accessors": [], "bufferViews": [], "buffers": [],
     }

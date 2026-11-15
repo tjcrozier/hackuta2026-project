@@ -12,7 +12,7 @@ import UIKit
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
-    // Black Box native channels.
+    // Cycl0ps native channels.
     let messenger = engineBridge.applicationRegistrar.messenger()
     RoomPlanBridge.register(messenger: messenger)
     MeshService.shared.register(messenger: messenger)

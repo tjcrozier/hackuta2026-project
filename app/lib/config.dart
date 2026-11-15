@@ -18,6 +18,7 @@ class Config {
   static const featureKeepAwake = true; // keep the screen on during a shift
   static const featureMotion = true; // fall, shock and no-movement detection
   static const featureMesh = true; // phone-to-phone messages when the internet is down
+  static const featureAthena = true; // Athena chat assistant (Groq, through our server)
   static const featureNearby = true; // precise distance with Nearby Interaction (UWB)
 
   /// iPhone 14 and newer only give a DIRECTION (the arrow) with help from the camera.

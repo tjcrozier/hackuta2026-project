@@ -1,4 +1,4 @@
-# PROGRESS.md — Black Box
+# PROGRESS.md — Cycl0ps (formerly Black Box)
 
 Updated after every phase.
 
@@ -381,3 +381,57 @@ Updated after every phase.
 - Chert API details (texts are still fake).
 - `cloudflared` for a public link (not installed).
 - CLAUDE.md privacy rule vs. camera assist on the rescuer phone.
+
+
+---
+
+## After Phase 10 — fixes, GitHub, Chert, Athena, rename (14 Nov 2026)
+
+**Glitch fixes (from testing on the phones)**
+- Phones could not always reach the server: the `.local` name also gives an IPv6 address and
+  uvicorn only listened on IPv4. New `server/run.py` listens on both. Start the server with
+  `python run.py` (not `uvicorn ...`).
+- End shift now tells the server (`POST /workers/{id}/end_shift`), so the worker leaves the
+  dashboard. Reopening the app during a shift goes straight back to the worker screen.
+- "Still" pill renamed "Not moving". `DEMO_WORKERS=false` in `server/.env` hides the 14
+  made-up workers (backup of the old database: `server/blackbox.db.backup`).
+- Battery is shown in 5% steps: that is all iOS gives apps.
+
+**GitHub**
+- Pushed to https://github.com/tjcrozier/hackuta2026-project, branch `blackbox-app`, PR #1
+  (main only accepts pull requests). Left open for the team to merge.
+
+**Chert FaceTime (kept as a feature, NOT demoed)**
+- Signed up, phone verified, line +1 913-282-1013 (free trial). The hosted demo call failed on
+  Chert's side (`bridge_remote_audio_timeout`, call id b2088b14-a7cf-4772-9fec-3230ece50c01).
+- Starter agent in `agent/` (`chert new agent --video`, Node.js, OpenAI `gpt-realtime`).
+  LiveKit + OpenAI keys not filled in; modes not written. Plan: `docs/CHERT_SETUP.md`.
+- Node.js 24 lives in `~/.local/node-v24.22.3` (use `export PATH="$HOME/.local/node-v24.22.3/bin:$PATH"`).
+
+**Rename: Black Box -> Cycl0ps**
+- App name on the iPhone, web title, logo (now one eye: `Icons.adjust`), headings, iOS
+  permission texts, emergency/hazard texts ("CYCL0PS EMERGENCY. ..."), docs. Screen readers
+  say "Cyclops". Bundle id, folders and the database file keep the old name on purpose.
+- The pitch lines "Planes have black boxes. Buildings don't." in DEMO_SCRIPT.md / BUILD_PLAN.md
+  were NOT changed: the opening needs a new line from the user.
+
+**Athena chat assistant (Groq)**
+- Server: `athena.py` + `POST /athena/chat`. The server adds the live site data and asks Groq
+  (`GROQ_MODEL`, default `openai/gpt-oss-120b`). No key, feature off, or Groq down ->
+  "Athena is offline right now..." (never an error). Flags: `FEATURE_ATHENA` (server/.env),
+  `Config.featureAthena` (app).
+- Privacy: a worker's Athena only sees that worker, their floor's hazards and Rescue Mode.
+  Supervisor and rescuer see every worker. Chats are not stored.
+- App: "Ask Athena" button on the supervisor home and worker home (full-screen chat,
+  `/athena?role=`). Web dashboard + rescuer page: chat panel on the right when the window is
+  1200 px or wider, otherwise an "Ask Athena" button that opens it from the bottom.
+  Not on the worker Rescue Mode screen (two big buttons only).
+- Checks: 62 server tests pass (7 new), ruff clean; 48 app tests pass (2 new), flutter analyze
+  clean; web build checked in a browser at 1440 px (panel) and 820 px (button + sheet), with
+  the offline reply. NOT checked: a real Groq answer (no key in `server/.env` yet) and the
+  phone screens on a device.
+
+**Still open (for the user)**
+- Put a NEW Groq key in `server/.env` as `GROQ_API_KEY=...` (the one pasted in chat must be revoked).
+- Restart the server (`python run.py`) and reinstall the app on the phones.
+- A new opening line for the pitch.

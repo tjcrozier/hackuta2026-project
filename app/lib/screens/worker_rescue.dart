@@ -82,7 +82,7 @@ class WorkerRescue extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'To save battery: lower the screen brightness and close other apps. '
-              'Do not close Black Box.',
+              'Do not close Cycl0ps.',
               style: body(14, color: BB.white),
             ),
           ],

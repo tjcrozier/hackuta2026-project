@@ -1,4 +1,4 @@
-"""SQLite storage for Black Box. One shared connection, small helper functions."""
+"""SQLite storage for Cycl0ps. One shared connection, small helper functions."""
 
 import re
 import sqlite3

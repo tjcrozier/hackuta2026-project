@@ -38,3 +38,11 @@ SCANS_DIR = os.environ.get("BB_SCANS_DIR", "scans")
 # Feature flags
 FEATURE_SCAN_COMPARE = _bool("FEATURE_SCAN_COMPARE", True)
 FEATURE_MESH = _bool("FEATURE_MESH", True)
+FEATURE_ATHENA = _bool("FEATURE_ATHENA", True)
+
+# Athena chat assistant (Groq). Empty key = Athena answers "offline".
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
+
+# Nearest stairs per zone. Keep in sync with zoneExits in app/lib/config.dart.
+ZONE_EXITS = {"A": "Stair 1, north side", "B": "Stair 1, north side", "C": "Stair 2, south side"}

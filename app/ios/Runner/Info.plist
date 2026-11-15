@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Black Box</string>
+	<string>Cycl0ps</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -27,22 +27,22 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Black Box uses the camera and LiDAR to scan the site, and to point a rescuer toward a missing worker's phone. Nothing is recorded.</string>
+	<string>Cycl0ps uses the camera and LiDAR to scan the site, and to point a rescuer toward a missing worker's phone. Nothing is recorded.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Black Box uses motion sensors to find your floor and detect falls.</string>
+	<string>Cycl0ps uses motion sensors to find your floor and detect falls.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Black Box uses Bluetooth to find your zone and help rescuers find you.</string>
+	<string>Cycl0ps uses Bluetooth to find your zone and help rescuers find you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Black Box uses your location only while you are on site.</string>
+	<string>Cycl0ps uses your location only while you are on site.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Black Box connects to nearby phones to send messages when the internet is down.</string>
+	<string>Cycl0ps connects to nearby phones to send messages when the internet is down.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_bb-mesh._tcp</string>
 		<string>_bb-mesh._udp</string>
 	</array>
 	<key>NSNearbyInteractionUsageDescription</key>
-	<string>Black Box measures distance to a teammate's phone to help find them.</string>
+	<string>Cycl0ps measures distance to a teammate's phone to help find them.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>
