@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/snapshot.dart';
 import '../../theme.dart';
 import '../../util.dart';
+import '../../widgets/athena_dock.dart';
 import '../../widgets/floor_map.dart';
 import '../../widgets/floor_tabs.dart';
 import '../../widgets/live_builder.dart';
@@ -34,7 +35,10 @@ class _RescuerScreenState extends State<RescuerScreen> {
   Widget build(BuildContext context) => LiveBuilder(builder: (context, live) {
         final snapshot = live.snapshot;
         return Scaffold(
-          body: snapshot == null
+          body: AthenaDock(
+            api: live.api,
+            role: 'rescuer',
+            child: snapshot == null
               ? Center(
                   child: Text(
                       live.offline
@@ -56,6 +60,7 @@ class _RescuerScreenState extends State<RescuerScreen> {
                     ),
                   ],
                 ),
+          ),
         );
       });
 

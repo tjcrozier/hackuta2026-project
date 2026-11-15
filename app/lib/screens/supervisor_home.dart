@@ -12,6 +12,7 @@ import '../services/shift.dart';
 import '../services/snapshot_cache.dart';
 import '../theme.dart';
 import '../util.dart';
+import '../widgets/athena_chat.dart' show athenaIcon;
 import '../widgets/big_button.dart';
 import '../widgets/hold_button.dart';
 import '../widgets/logo.dart';
@@ -236,6 +237,16 @@ class _SupervisorHomeState extends State<SupervisorHome> {
           ),
         ],
       ),
+      if (Config.featureAthena) ...[
+        const SizedBox(height: 12),
+        BigButton(
+          label: 'Ask Athena',
+          icon: athenaIcon,
+          outlined: true,
+          height: 56,
+          onPressed: () => context.push('/athena?role=supervisor'),
+        ),
+      ],
       _sectionTitle('Open hazards'),
       if (openHazards.isEmpty)
         _plainCard(

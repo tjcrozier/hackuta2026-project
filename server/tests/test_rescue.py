@@ -60,7 +60,7 @@ def test_rescue_start_texts_every_worker_and_resets_checkins(client, join):
     assert status_counts(client) == {"none": 2}
     bodies = [m["body"] for m in state["messages"]]
     assert len(bodies) == 2
-    assert "BLACK BOX EMERGENCY. Ana, are you OK? Reply 1 if safe, 2 if you need help." in bodies
+    assert "CYCL0PS EMERGENCY. Ana, are you OK? Reply 1 if safe, 2 if you need help." in bodies
 
 
 def test_starting_twice_keeps_one_rescue(client, join):

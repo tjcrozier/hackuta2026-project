@@ -41,6 +41,19 @@ class HazardBody(BaseModel):
     status: Literal["open", "fixed", "false_alarm"]
 
 
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    text: str = Field(min_length=1, max_length=2000)
+
+
+class AthenaBody(BaseModel):
+    """The chat so far. worker_id is needed for role "worker" (Athena only sees that worker)."""
+
+    role: Literal["worker", "supervisor", "rescuer"]
+    worker_id: str | None = None
+    messages: list[ChatTurn] = Field(min_length=1, max_length=40)
+
+
 class MeshMessage(BaseModel):
     """A message that hopped from phone to phone (see BUILD_PLAN.md, "Mesh message format")."""
 

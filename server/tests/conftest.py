@@ -34,6 +34,8 @@ def client(monkeypatch: pytest.MonkeyPatch, clock: Clock, tmp_path):
     monkeypatch.setattr(config, "SUPERVISOR_PHONE", "+10000000000")
     monkeypatch.setattr(config, "FEATURE_SCAN_COMPARE", True)
     monkeypatch.setattr(config, "CHERT_API_KEY", "")
+    monkeypatch.setattr(config, "GROQ_API_KEY", "")  # Athena never calls Groq in tests
+    monkeypatch.setattr(config, "FEATURE_ATHENA", True)
     monkeypatch.setattr(config, "DEMO_MODE", True)
     monkeypatch.setattr(config, "DEMO_WORKERS", True)  # tests ignore server/.env
     monkeypatch.setattr(config, "SITE_CODE", "ARL-0412")

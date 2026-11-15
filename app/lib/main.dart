@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'screens/athena_screen.dart';
 import 'screens/beacon_mode_screen.dart';
 import 'screens/demo_tools.dart';
 import 'screens/fall_check.dart';
@@ -28,7 +29,7 @@ Future<void> main() async {
   final resume = !kIsWeb && shift.resumeShift();
   _router = _buildRouter(initial: resume ? '/worker' : '/');
   runApp(
-    ChangeNotifierProvider.value(value: shift, child: const BlackBoxApp()),
+    ChangeNotifierProvider.value(value: shift, child: const CyclopsApp()),
   );
 }
 
@@ -63,15 +64,19 @@ GoRouter _buildRouter({required String initial}) => GoRouter(
     GoRoute(path: '/finder', builder: (_, _) => const FinderScreen()),
     GoRoute(path: '/mesh', builder: (_, _) => const MeshScreen()),
     GoRoute(path: '/demo', builder: (_, _) => const DemoTools()),
+    GoRoute(
+      path: '/athena',
+      builder: (_, state) => AthenaScreen(role: state.uri.queryParameters['role'] ?? 'worker'),
+    ),
   ],
 );
 
-class BlackBoxApp extends StatelessWidget {
-  const BlackBoxApp({super.key});
+class CyclopsApp extends StatelessWidget {
+  const CyclopsApp({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
-    title: 'Black Box',
+    title: 'Cycl0ps',
     debugShowCheckedModeBanner: false,
     theme: buildTheme(),
     routerConfig: _router,
