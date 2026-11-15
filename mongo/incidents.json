@@ -1,0 +1,1 @@
+[{"_id": "inc-001", "site_id": "site-uta-01", "type": "partial_collapse", "time": {"$date": "2026-11-15T15:43:52Z"}, "worker_id": "W-04", "last_known": {"x": 22.0, "y": 14.0, "z": 0.0, "floor": 1, "lat": 32.7300258, "lon": -97.1137651}, "detected_by": "fall_detected flag in worker_motion", "status": "open", "demo": true}]
