@@ -99,3 +99,77 @@ def test_gpt_oss_models_think_briefly(monkeypatch):
     assert athena.request_body([])["reasoning_effort"] == "low"
     monkeypatch.setattr(config, "GROQ_MODEL", "qwen/qwen3.8-27b")
     assert "reasoning_effort" not in athena.request_body([])
+
+
+# ---- Athena Live: questions about a camera picture ----
+
+JPEG = "/9j/4AAQSkZJRgABAQAAAQABAAD" + "A" * 200  # starts like a real JPEG
+
+
+def look(client, image=JPEG, question="Can I drink it?", previous=None):
+    body = {"image": image, "question": question}
+    if previous:
+        body["previous_question"] = previous
+    return client.post("/athena/look", json=body)
+
+
+def test_look_is_offline_without_a_key(client):
+    assert look(client).json() == {"reply": athena.LOOK_OFFLINE_REPLY, "source": "offline"}
+
+
+def test_look_sends_the_picture_and_question_to_the_vision_model(client, monkeypatch):
+    sent = []
+
+    async def _ask(messages, model=None):
+        sent.append((messages, model))
+        return "No. That is bleach. Do not drink it."
+
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-key")
+    monkeypatch.setattr(athena, "ask_groq", _ask)
+    reply = look(client, previous="What is this?").json()
+    assert reply == {"reply": "No. That is bleach. Do not drink it.", "source": "groq"}
+    messages, model = sent[0]
+    assert model == config.GROQ_VISION_MODEL
+    text, picture = messages[1]["content"]
+    assert "Can I drink it?" in text["text"] and "What is this?" in text["text"]
+    assert picture["image_url"]["url"] == "data:image/jpeg;base64," + JPEG
+
+
+def test_look_refuses_something_that_is_not_a_picture(client):
+    assert look(client, image="aGVsbG8gd29ybGQ" + "A" * 200).status_code == 400
+
+
+def test_look_is_offline_when_groq_fails(client, monkeypatch):
+    async def broken(messages, model=None):
+        raise httpx.ConnectError("down")
+
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-key")
+    monkeypatch.setattr(athena, "ask_groq", broken)
+    assert look(client).json()["source"] == "offline"
+
+
+def test_thinking_tags_are_removed(monkeypatch):
+    import asyncio
+
+    class FakeResponse:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"choices": [{"message": {"content": "<think>hmm</think> It is bleach."}}]}
+
+    class FakeClient:
+        def __init__(self, **_):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_):
+            pass
+
+        async def post(self, *_, **__):
+            return FakeResponse()
+
+    monkeypatch.setattr(athena.httpx, "AsyncClient", FakeClient)
+    assert asyncio.run(athena.ask_groq([], "qwen/qwen3.8-27b")) == "It is bleach."

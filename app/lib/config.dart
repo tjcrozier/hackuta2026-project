@@ -19,6 +19,7 @@ class Config {
   static const featureMotion = true; // fall, shock and no-movement detection
   static const featureMesh = true; // phone-to-phone messages when the internet is down
   static const featureAthena = true; // Athena chat assistant (Groq, through our server)
+  static const featureAthenaLive = true; // video call button in the Athena chat (Athena Live)
   static const featureNearby = true; // precise distance with Nearby Interaction (UWB)
 
   /// iPhone 14 and newer only give a DIRECTION (the arrow) with help from the camera.

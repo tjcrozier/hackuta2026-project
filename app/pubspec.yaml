@@ -49,7 +49,7 @@ dependencies:
   uuid: ^4.6.0
   google_fonts: ^9.0.0
   wakelock_plus: ^1.8.0
-
+  camera: ^0.12.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

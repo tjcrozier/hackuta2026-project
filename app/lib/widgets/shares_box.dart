@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../config.dart';
 import '../theme.dart';
 
 /// "What your phone shares" box. Shown on the join screen and the worker home.
@@ -28,11 +29,28 @@ class SharesBox extends StatelessWidget {
                 const Icon(Icons.block_outlined, size: 20, color: BB.muted),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text('Never: camera, microphone, messages',
+                  child: Text('Never tracked: camera, microphone, messages',
                       style: body(14, weight: FontWeight.w600)),
                 ),
               ],
             ),
+            if (Config.featureAthena && Config.featureAthenaLive) ...[
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.videocam_outlined, size: 20, color: BB.muted),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'The camera is on only during a video call with Athena '
+                      'that you start. Nothing is recorded.',
+                      style: body(13, color: BB.muted),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 6),
             Text('Only between Start shift and End shift.', style: body(13, color: BB.muted)),
           ],

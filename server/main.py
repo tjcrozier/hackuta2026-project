@@ -21,6 +21,7 @@ import rules
 import scans
 from models import (
     AthenaBody,
+    AthenaLookBody,
     CheckinBody,
     EventBody,
     HazardBody,
@@ -337,6 +338,15 @@ async def athena_chat(body: AthenaBody) -> dict[str, str]:
         worker_or_404(body.worker_id or "")
     messages = [turn.model_dump() for turn in body.messages]
     text, source = await athena.reply(messages, db.snapshot(), body.role, body.worker_id)
+    return {"reply": text, "source": source}
+
+
+@app.post("/athena/look")
+async def athena_look(body: AthenaLookBody) -> dict[str, str]:
+    """Athena Live: answer a question about one camera picture. The picture is not stored."""
+    if not athena.picture_ok(body.image):
+        raise HTTPException(400, "The picture must be a JPEG or PNG.")
+    text, source = await athena.look(body.image, body.question, body.previous_question)
     return {"reply": text, "source": source}
 
 

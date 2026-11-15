@@ -135,7 +135,7 @@ The UI mockups exist on the user's Design canvas. Follow these rules so the app 
 - Every color also has a word or icon (color-blind safe).
 - Rescue Mode turns the whole screen dark red (`#7F1D1D`) with two huge buttons: "I'm safe" (white) and "I need help".
 - Red emergency button needs a **2-second hold**, never a single tap.
-- Worker home always shows "What your phone shares" (zone, floor, battery) and "Never: camera, microphone, messages".
+- Worker home always shows "What your phone shares" (zone, floor, battery) and "Never tracked: camera, microphone, messages", plus one line saying the camera is on only during a video call with Athena that the worker starts.
 - No emoji in the UI. Use simple line icons.
 
 ---
@@ -163,6 +163,7 @@ The UI mockups exist on the user's Design canvas. Follow these rules so the app 
 - Microphone only during that FaceTime call, or a voice note the worker chooses to send in Rescue Mode (stretch goal).
 - FaceTime calls are live only: Cycl0ps never records or stores video or audio, only the agent's short text summary. During a call, video and audio pass through Chert, LiveKit and OpenAI.
 - Athena (chat): questions go to our server, which adds live site data and asks Groq. A worker's Athena sees only that worker, their floor's hazards and Rescue Mode, never other workers. Supervisor and rescuer chats send workers' names, floors, zones, status and battery to Groq. Chats are not stored on the server.
+- Athena Live (video call): the video button in the Athena chat opens a call screen in the app. The person starts it; the camera stops when they tap End or leave the screen. The microphone is never used. When they ask a question, the app takes ONE picture and sends it with the question to our server, which asks Groq (`GROQ_VISION_MODEL`). The picture is not stored or recorded. Athena Live gets no site data.
 - Tracking only between "Start shift" and "End shift".
 
 ---

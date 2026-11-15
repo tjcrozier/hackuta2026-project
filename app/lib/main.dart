@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screens/athena_screen.dart';
+import 'screens/athena_live_screen.dart';
 import 'screens/beacon_mode_screen.dart';
 import 'screens/demo_tools.dart';
 import 'screens/fall_check.dart';
@@ -18,6 +19,7 @@ import 'screens/supervisor_home.dart';
 import 'screens/web/dashboard_screen.dart';
 import 'screens/web/rescuer_screen.dart';
 import 'screens/worker_home.dart';
+import 'services/api.dart';
 import 'services/shift.dart';
 import 'theme.dart';
 
@@ -67,6 +69,12 @@ GoRouter _buildRouter({required String initial}) => GoRouter(
     GoRoute(
       path: '/athena',
       builder: (_, state) => AthenaScreen(role: state.uri.queryParameters['role'] ?? 'worker'),
+    ),
+    // Athena Live (video call). The chat passes its server client; phones fall back to the shift's.
+    GoRoute(
+      path: '/athena/live',
+      builder: (context, state) =>
+          AthenaLiveScreen(api: state.extra as Api? ?? context.read<Shift>().api),
     ),
   ],
 );
