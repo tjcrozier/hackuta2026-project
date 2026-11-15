@@ -1,0 +1,1 @@
+[{"_id": "site-uta-01", "name": "UTA Demo Renovation Site", "address": "Arlington, TX (demo)", "origin": {"type": "Point", "coordinates": [-97.114, 32.7299]}, "size_m": {"x": 30.0, "y": 20.0, "z": 6.0}, "floors": 2, "units": "meters, local x=east y=north z=up from origin", "status": "active", "demo": true}]
