@@ -15,19 +15,20 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
-/// Calls the Black Box server (see BUILD_PLAN.md, "REST API").
+/// Calls the Cycl0ps server (see BUILD_PLAN.md, "REST API").
 class Api {
   Api(this.baseUrl);
   final String baseUrl;
 
   static const _timeout = Duration(seconds: 6);
 
-  Future<Map<String, dynamic>> _post(String path, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> _post(String path, Map<String, dynamic> data,
+      {Duration timeout = _timeout}) async {
     try {
       final response = await http
           .post(Uri.parse('$baseUrl$path'),
               headers: {'content-type': 'application/json'}, body: jsonEncode(data))
-          .timeout(_timeout);
+          .timeout(timeout);
       return _decode(response);
     } on ApiException {
       rethrow;
@@ -131,6 +132,36 @@ class Api {
 
   /// Demo mode only: back to the 14 demo workers and yesterday's scans.
   Future<void> demoReset() => _post('/demo/reset', {});
+
+  /// Athena's answer to the chat so far. source is 'groq', or 'offline' when Athena
+  /// could not answer (no key, feature off, or Groq unreachable).
+  Future<({String reply, String source})> athena({
+    required String role,
+    String? workerId,
+    required List<Map<String, String>> messages,
+  }) async {
+    final reply = await _post(
+      '/athena/chat',
+      {'role': role, 'worker_id': ?workerId, 'messages': messages},
+      timeout: const Duration(seconds: 25), // the model can take a few seconds
+    );
+    return (reply: reply['reply'] as String? ?? '', source: reply['source'] as String? ?? 'offline');
+  }
+
+  /// Athena Live: a question about one camera picture (JPEG, base64).
+  /// The server asks Groq and does not store the picture.
+  Future<({String reply, String source})> athenaLook({
+    required String imageBase64,
+    required String question,
+    String? previousQuestion,
+  }) async {
+    final reply = await _post(
+      '/athena/look',
+      {'image': imageBase64, 'question': question, 'previous_question': ?previousQuestion},
+      timeout: const Duration(seconds: 25),
+    );
+    return (reply: reply['reply'] as String? ?? '', source: reply['source'] as String? ?? 'offline');
+  }
 
   Future<Snapshot> state() async {
     try {

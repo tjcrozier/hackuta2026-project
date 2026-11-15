@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Black Box colors. Each color has one meaning (see CLAUDE.md, section 4).
+/// Cycl0ps colors. Each color has one meaning (see CLAUDE.md, section 4).
 class BB {
   static const ground = Color(0xFFF5F4F0); // page background
   static const ink = Color(0xFF1C1F24); // text, dark cards

@@ -76,7 +76,7 @@ def test_offline_rescue_message_starts_rescue_once(client, join):
     state = client.get("/state").json()
     assert state["rescue"] == {"active": True, "reason": "impact on 3 phones (offline)",
                                "started_at": 1_763_060_000}
-    emergency = [m for m in state["messages"] if "BLACK BOX EMERGENCY" in m["body"]]
+    emergency = [m for m in state["messages"] if "CYCL0PS EMERGENCY" in m["body"]]
     assert len(emergency) == 2  # one text per worker, not per rescue message
 
 

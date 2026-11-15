@@ -1,4 +1,4 @@
-# CLAUDE.md — Black Box
+# CLAUDE.md — Cycl0ps
 
 Read this file fully before doing anything. Then read `BUILD_PLAN.md`. Work through the plan **one phase at a time**.
 
@@ -6,7 +6,7 @@ Read this file fully before doing anything. Then read `BUILD_PLAN.md`. Work thro
 
 ## 1. What we are building
 
-**Black Box** is a "black box for job sites."
+**Cycl0ps** (written with a zero; formerly "Black Box") tells you who is inside a job site. In the UI and texts it is always "Cycl0ps"; screen readers say "Cyclops". Folder names, the bundle id `com.sajid.blackbox` and the database file keep the old name on purpose.
 
 - **Daily Mode:** a supervisor scans each floor with an iPhone LiDAR scan (Apple RoomPlan). The server compares today's scan with yesterday's and texts an alert when a new hazard appears (a new hole, a missing door, a removed wall).
 - **Worker tracking:** each worker's iPhone sends a small ping every 2 minutes: zone, floor, battery. No camera, no audio.
@@ -35,6 +35,8 @@ This is a **hackathon project**. The goal is a reliable, good-looking demo for j
 | Web dashboard + rescuer page | Same Flutter project built for web |
 | Server | Python 3.11, FastAPI, Uvicorn, SQLite (via `sqlite3` or SQLModel), WebSockets |
 | Texts / check-ins | Chert API (iMessage/SMS) behind a `MessageSender` interface, with a `FakeSender` fallback |
+| Athena chat assistant | Groq (`openai/gpt-oss-120b`) called by the server with `httpx`; key in `server/.env` |
+| FaceTime agent (built, NOT demoed) | Chert FaceTime line + LiveKit Agents (Node.js) in `agent/`; see `docs/CHERT_SETUP.md` |
 | Hosting | Rocky Linux (CIQ) VM or laptop; public HTTPS via `cloudflared` tunnel |
 
 Flutter packages to use: `http`, `web_socket_channel`, `flutter_blue_plus`, `flutter_ble_peripheral`, `sensors_plus`, `battery_plus`, `geolocator`, `shared_preferences`, `model_viewer_plus`, `provider`, `go_router`, `audioplayers` (finder beep), `uuid`.
@@ -133,7 +135,7 @@ The UI mockups exist on the user's Design canvas. Follow these rules so the app 
 - Every color also has a word or icon (color-blind safe).
 - Rescue Mode turns the whole screen dark red (`#7F1D1D`) with two huge buttons: "I'm safe" (white) and "I need help".
 - Red emergency button needs a **2-second hold**, never a single tap.
-- Worker home always shows "What your phone shares" (zone, floor, battery) and "Never: camera, microphone, messages".
+- Worker home always shows "What your phone shares" (zone, floor, battery) and "Never tracked: camera, microphone, messages", plus one line saying the camera is on only during a video call with Athena that the worker starts.
 - No emoji in the UI. Use simple line icons.
 
 ---
@@ -157,7 +159,11 @@ The UI mockups exist on the user's Design canvas. Follow these rules so the app 
 
 - Phones send only: worker id, name, phone number (once at join), zone, floor, battery, timestamps, and events (fall, shock, no-movement).
 - Raw sensor data stays on the phone.
-- No camera use except the supervisor's LiDAR scan. No audio except a voice note the worker chooses to send in Rescue Mode (stretch goal).
+- Camera only for: the supervisor's LiDAR scan, the rescuer's camera assist in the Finder, and a FaceTime call with the Cycl0ps Safety agent that the person starts (or accepts) themselves. Never in the background.
+- Microphone only during that FaceTime call, or a voice note the worker chooses to send in Rescue Mode (stretch goal).
+- FaceTime calls are live only: Cycl0ps never records or stores video or audio, only the agent's short text summary. During a call, video and audio pass through Chert, LiveKit and OpenAI.
+- Athena (chat): questions go to our server, which adds live site data and asks Groq. A worker's Athena sees only that worker, their floor's hazards and Rescue Mode, never other workers. Supervisor and rescuer chats send workers' names, floors, zones, status and battery to Groq. Chats are not stored on the server.
+- Athena Live (video call): the video button in the Athena chat opens a call screen in the app. The person starts it; the camera stops when they tap End or leave the screen. The microphone is never used. When they ask a question, the app takes ONE picture and sends it with the question to our server, which asks Groq (`GROQ_VISION_MODEL`). The picture is not stored or recorded. Athena Live gets no site data.
 - Tracking only between "Start shift" and "End shift".
 
 ---

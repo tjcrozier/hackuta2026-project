@@ -72,7 +72,7 @@ class Finder extends ChangeNotifier {
       if (state == BluetoothAdapterState.on) {
         _scan();
       } else if (state == BluetoothAdapterState.unauthorized) {
-        _fail('Bluetooth is not allowed. Turn it on in Settings > Black Box.');
+        _fail('Bluetooth is not allowed. Turn it on in Settings > Cycl0ps.');
       } else if (state == BluetoothAdapterState.off) {
         _fail('Bluetooth is off. Turn it on to find phones.');
       }

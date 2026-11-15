@@ -1,4 +1,4 @@
-# BUILD_PLAN.md — Black Box
+# BUILD_PLAN.md — Cycl0ps (formerly Black Box)
 
 Build in this order. Each phase ends with **checks** that must pass before moving on. Phases 0–6 are the **core demo**. Phases 7–9 are the **offline features**. Phase 10 is **demo polish**. If time runs short, cut from the bottom (see section "Cut list").
 
@@ -49,6 +49,7 @@ Build in this order. Each phase ends with **checks** that must pass before movin
 | POST `/chert/webhook` | Chert's format | `{ok}` (parses "1" / "2" replies) |
 | POST `/scan` | multipart: `floor`, `model` (.usdz), `room_json` | `{scan_id, parts, hazards: [...]}` |
 | POST `/hazards/{id}` | `{status}` | hazard |
+| POST `/athena/chat` | `{role: worker\|supervisor\|rescuer, worker_id?, messages: [{role: user\|assistant, text}]}` | `{reply, source: groq\|offline}` (Athena chat; added after Phase 10 at the user's request. A worker sees only their own data.) |
 | POST `/hazards/{id}/warn` | – | `{ok, sent}` (texts workers on the hazard's floor; added in Phase 5, approved by the user) |
 | POST `/mesh/upload` | `{messages: [MeshMessage]}` | `{accepted, duplicates}` |
 | GET `/state` | – | full snapshot (same as WebSocket payload) |
@@ -98,13 +99,13 @@ Rules: drop if `msg_id` already seen; drop if `ttl == 0`; otherwise store, show,
 6. Create `PROGRESS.md` with a checklist of all phases.
 
 **Info.plist keys** (give the user exact steps or edit the file):
-- NSCameraUsageDescription: "Black Box uses the camera and LiDAR to scan the site."
-- NSMotionUsageDescription: "Black Box uses motion sensors to find your floor and detect falls."
-- NSBluetoothAlwaysUsageDescription: "Black Box uses Bluetooth to find your zone and help rescuers find you."
-- NSLocationWhenInUseUsageDescription: "Black Box uses your location only while you are on site."
-- NSLocalNetworkUsageDescription: "Black Box connects to nearby phones to send messages when the internet is down."
+- NSCameraUsageDescription: "Cycl0ps uses the camera and LiDAR to scan the site."
+- NSMotionUsageDescription: "Cycl0ps uses motion sensors to find your floor and detect falls."
+- NSBluetoothAlwaysUsageDescription: "Cycl0ps uses Bluetooth to find your zone and help rescuers find you."
+- NSLocationWhenInUseUsageDescription: "Cycl0ps uses your location only while you are on site."
+- NSLocalNetworkUsageDescription: "Cycl0ps connects to nearby phones to send messages when the internet is down."
 - NSBonjourServices: `_bb-mesh._tcp`, `_bb-mesh._udp`
-- NSNearbyInteractionUsageDescription: "Black Box measures distance to a teammate's phone to help find them."
+- NSNearbyInteractionUsageDescription: "Cycl0ps measures distance to a teammate's phone to help find them."
 
 **Checks**
 - [ ] `flutter run` shows the default app on the user's iPhone.
@@ -121,7 +122,7 @@ Rules: drop if `msg_id` already seen; drop if `ttl == 0`; otherwise store, show,
 4. **Collapse logic:** on each `shock` event, count distinct workers with a shock in the last COLLAPSE_WINDOW_SEC. If ≥ COLLAPSE_PHONES and no rescue active → start rescue with reason "impact on N phones".
 5. **Fall alert:** on `fall_alert` event → send text to supervisor: "Possible fall: {name}, Floor {f}, Zone {z}."
 6. `senders.py`: `MessageSender` interface with `send(to, body)`. `FakeSender` logs and stores in `messages`. `ChertSender` reads `CHERT_API_KEY` and base URL from `.env`. **The exact Chert endpoint and webhook fields are unknown:** leave clearly marked TODOs and ask the user to paste them from docs.trychert.com or the Chert booth. Use FakeSender when no key is set.
-7. On rescue start: set every active worker's check-in to "none" and send each: "BLACK BOX EMERGENCY. {name}, are you OK? Reply 1 if safe, 2 if you need help."
+7. On rescue start: set every active worker's check-in to "none" and send each: "CYCL0PS EMERGENCY. {name}, are you OK? Reply 1 if safe, 2 if you need help."
 8. `/chert/webhook`: match sender phone → worker; "1" → safe, "2" → help, other text → help + save as note.
 9. `demo.py` + `/demo/reset`: seed 14 workers across 3 floors (names and positions like the live demo page), one site, yesterday's scans for floors 1–3.
 10. Tests: collapse trigger (2 phones = no, 3 phones = yes, 3 phones over 6 s = no), reply parsing, check-in counts.
