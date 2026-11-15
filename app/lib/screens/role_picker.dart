@@ -23,11 +23,11 @@ class RolePicker extends StatelessWidget {
               children: [
                 const Logo(size: 44),
                 const SizedBox(width: 12),
-                Text('Black Box', style: heading(30)),
+                Text('Cycl0ps', semanticsLabel: 'Cyclops', style: heading(30)),
               ],
             ),
             const SizedBox(height: 8),
-            Text('A black box for job sites.', style: body(16, color: BB.muted)),
+            Text('Know who is inside.', style: body(16, color: BB.muted)),
             const SizedBox(height: 24),
             Text('What is this phone for?', style: heading(20)),
             const SizedBox(height: 12),

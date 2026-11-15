@@ -1,4 +1,4 @@
-"""Start the Black Box server on port 8000 for BOTH IPv4 and IPv6.
+"""Start the Cycl0ps server on port 8000 for BOTH IPv4 and IPv6.
 
 Why: phones often reach the laptop by its name (for example MyMac.local). That name
 gives IPv6 addresses as well as the normal IPv4 one, and a server that only listens on
@@ -31,7 +31,7 @@ def main() -> None:
         sockets.append(listen(socket.AF_INET6, "::", port))
     except OSError as error:  # no IPv6 on this machine: IPv4 alone still works
         print(f"IPv6 not available ({error}); listening on IPv4 only.")
-    print(f"Black Box server on port {port}. Dashboard: http://localhost:{port}/app/#/dashboard")
+    print(f"Cycl0ps server on port {port}. Dashboard: http://localhost:{port}/app/#/dashboard")
     server = uvicorn.Server(uvicorn.Config("main:app", log_level="info"))
     asyncio.run(server.serve(sockets=sockets))
 

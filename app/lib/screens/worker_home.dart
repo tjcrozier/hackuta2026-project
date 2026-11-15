@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../config.dart';
 import '../services/shift.dart';
 import '../theme.dart';
+import '../widgets/athena_chat.dart' show athenaIcon;
 import '../widgets/big_button.dart';
 import '../widgets/offline_banner.dart';
 import '../widgets/shares_box.dart';
@@ -224,6 +225,16 @@ class _WorkerHomeState extends State<WorkerHome> {
         const SizedBox(height: 12),
         _meshRow(shift),
         const SizedBox(height: 12),
+        if (Config.featureAthena) ...[
+          BigButton(
+            label: 'Ask Athena',
+            icon: athenaIcon,
+            outlined: true,
+            height: 56,
+            onPressed: () => context.push('/athena?role=worker'),
+          ),
+          const SizedBox(height: 12),
+        ],
         BigButton(
           label: 'End shift',
           icon: Icons.logout_outlined,

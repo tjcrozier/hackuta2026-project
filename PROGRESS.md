@@ -1,4 +1,4 @@
-# PROGRESS.md — Black Box
+# PROGRESS.md — Cycl0ps (formerly Black Box)
 
 Updated after every phase.
 
@@ -381,3 +381,84 @@ Updated after every phase.
 - Chert API details (texts are still fake).
 - `cloudflared` for a public link (not installed).
 - CLAUDE.md privacy rule vs. camera assist on the rescuer phone.
+
+
+---
+
+## After Phase 10 — fixes, GitHub, Chert, Athena, rename (14 Nov 2026)
+
+**Glitch fixes (from testing on the phones)**
+- Phones could not always reach the server: the `.local` name also gives an IPv6 address and
+  uvicorn only listened on IPv4. New `server/run.py` listens on both. Start the server with
+  `python run.py` (not `uvicorn ...`).
+- End shift now tells the server (`POST /workers/{id}/end_shift`), so the worker leaves the
+  dashboard. Reopening the app during a shift goes straight back to the worker screen.
+- "Still" pill renamed "Not moving". `DEMO_WORKERS=false` in `server/.env` hides the 14
+  made-up workers (backup of the old database: `server/blackbox.db.backup`).
+- Battery is shown in 5% steps: that is all iOS gives apps.
+
+**GitHub**
+- Pushed to https://github.com/tjcrozier/hackuta2026-project, branch `blackbox-app`, PR #1
+  (main only accepts pull requests). Left open for the team to merge.
+
+**Chert FaceTime (kept as a feature, NOT demoed)**
+- Signed up, phone verified, line +1 913-282-1013 (free trial). The hosted demo call failed on
+  Chert's side (`bridge_remote_audio_timeout`, call id b2088b14-a7cf-4772-9fec-3230ece50c01).
+- Starter agent in `agent/` (`chert new agent --video`, Node.js, OpenAI `gpt-realtime`).
+  LiveKit + OpenAI keys not filled in; modes not written. Plan: `docs/CHERT_SETUP.md`.
+- Node.js 24 lives in `~/.local/node-v24.22.3` (use `export PATH="$HOME/.local/node-v24.22.3/bin:$PATH"`).
+
+**Rename: Black Box -> Cycl0ps**
+- App name on the iPhone, web title, logo (now one eye: `Icons.adjust`), headings, iOS
+  permission texts, emergency/hazard texts ("CYCL0PS EMERGENCY. ..."), docs. Screen readers
+  say "Cyclops". Bundle id, folders and the database file keep the old name on purpose.
+- The pitch lines "Planes have black boxes. Buildings don't." in DEMO_SCRIPT.md / BUILD_PLAN.md
+  were NOT changed: the opening needs a new line from the user.
+
+**Athena chat assistant (Groq)**
+- Server: `athena.py` + `POST /athena/chat`. The server adds the live site data and asks Groq
+  (`GROQ_MODEL`, default `openai/gpt-oss-120b`). No key, feature off, or Groq down ->
+  "Athena is offline right now..." (never an error). Flags: `FEATURE_ATHENA` (server/.env),
+  `Config.featureAthena` (app).
+- Privacy: a worker's Athena only sees that worker, their floor's hazards and Rescue Mode.
+  Supervisor and rescuer see every worker. Chats are not stored.
+- App: "Ask Athena" button on the supervisor home and worker home (full-screen chat,
+  `/athena?role=`). Web dashboard + rescuer page: chat panel on the right when the window is
+  1200 px or wider, otherwise an "Ask Athena" button that opens it from the bottom.
+  Not on the worker Rescue Mode screen (two big buttons only).
+- Checks: 62 server tests pass (7 new), ruff clean; 48 app tests pass (2 new), flutter analyze
+  clean; web build checked in a browser at 1440 px (panel) and 820 px (button + sheet), with
+  the offline reply. NOT checked: a real Groq answer (no key in `server/.env` yet) and the
+  phone screens on a device.
+
+**Still open (for the user)**
+- Put a NEW Groq key in `server/.env` as `GROQ_API_KEY=...` (the one pasted in chat must be revoked).
+- Restart the server (`python run.py`) and reinstall the app on the phones.
+- A new opening line for the pitch.
+
+**Athena Live (video call inside the app)**
+- The video button next to the Athena text box (`Config.featureAthenaLive`) opens
+  `screens/athena_live_screen.dart` (`/athena/live`). It no longer needs FaceAi or port 3000.
+- Screen: the back camera fills the screen, Athena's name and call time on top, captions,
+  the three quick questions always on screen ("What is this?", "Can I drink it?",
+  "Can I touch it?"), a text box (the keyboard's dictation key works for voice), and
+  Flip / End buttons. `camera` package added (`url_launcher` removed again).
+- Each question: the app takes one picture (medium size) and sends it to the new server
+  route `POST /athena/look`. The server asks Groq's vision model (`GROQ_VISION_MODEL`,
+  default `qwen/qwen3.8-27b`, the only model on our key that reads pictures; it read a
+  test BLEACH label correctly in under a second) with the Groq key from `server/.env`.
+  The key never goes on the phone. Pictures are not stored. Microphone never used.
+- Voice: Athena reads each answer out loud with Apple's built-in text-to-speech
+  (`AVSpeechSynthesizer`), through `VoiceService` in `ios/Runner/AppDelegate.swift`
+  (channel `blackbox/voice`) and `lib/services/voice.dart`. No package: `flutter_tts` was
+  tried first but needs CocoaPods, which this Mac does not have; the user chose this way.
+  It speaks even with the silent switch on, lowers music while talking, and stops on a new
+  question or End. Replay and Mute buttons on the iPhone only; the web call is captions
+  only. No audio leaves the phone. No site data is given to Athena Live.
+- Privacy wording: worker box says "The camera is on only during a video call with
+  Athena that you start. Nothing is recorded." CLAUDE.md / AGENTS.md section 6 updated.
+- Checks: see the end of this section.
+- Checks: flutter analyze clean, 49 app tests pass (1 new), 68 server tests pass (5 new),
+  ruff clean. `/athena/look` answered a test BLEACH picture correctly through the real
+  server and Groq (about 1 s). Web build done. Installed on Sajid's iPhone 17 Pro Max.
+  NOT checked: opening the call on the iPhone (camera permission, picture quality).
