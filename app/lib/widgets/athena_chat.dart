@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../config.dart';
 import '../services/api.dart';
 import '../services/athena.dart';
 import '../theme.dart';
@@ -69,6 +71,11 @@ class _AthenaChatState extends State<AthenaChat> {
     _text.clear();
     _chat.ask(widget.api, question, workerId: widget.workerId);
   }
+
+  /// Opens Athena Live: a video call inside the app where Athena looks through the camera.
+  /// The person starts it themselves; the camera is never used in the background.
+  void _startLiveCall() =>
+      context.push('/athena/live?role=${_chat.role}', extra: widget.api);
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
@@ -259,6 +266,22 @@ class _AthenaChatState extends State<AthenaChat> {
                 ),
               ),
             ),
+            if (Config.featureAthenaLive) ...[
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 52,
+                height: 52,
+                child: IconButton.filled(
+                  onPressed: _startLiveCall,
+                  tooltip: 'Video call Athena',
+                  style: IconButton.styleFrom(
+                    backgroundColor: BB.ink,
+                    foregroundColor: BB.white,
+                  ),
+                  icon: const Icon(Icons.videocam_outlined),
+                ),
+              ),
+            ],
             const SizedBox(width: 8),
             SizedBox(
               width: 52,

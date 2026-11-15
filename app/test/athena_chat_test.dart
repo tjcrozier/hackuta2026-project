@@ -14,6 +14,7 @@ void main() {
     expect(find.textContaining('Never other workers'), findsOneWidget);
     expect(find.text('Any hazards on my floor?'), findsOneWidget);
     expect(find.text('Athena can be wrong. In an emergency, call 911.'), findsOneWidget);
+    expect(find.byTooltip('Video call Athena'), findsOneWidget);
   });
 
   testWidgets('shows both sides of the chat and marks offline replies', (tester) async {

@@ -54,6 +54,14 @@ class AthenaBody(BaseModel):
     messages: list[ChatTurn] = Field(min_length=1, max_length=40)
 
 
+class AthenaLookBody(BaseModel):
+    """Athena Live: one camera picture (JPEG, base64) and the question about it."""
+
+    question: str = Field(min_length=1, max_length=300)
+    image: str = Field(min_length=100, max_length=4_000_000)
+    previous_question: str | None = Field(default=None, max_length=300)
+
+
 class MeshMessage(BaseModel):
     """A message that hopped from phone to phone (see BUILD_PLAN.md, "Mesh message format")."""
 

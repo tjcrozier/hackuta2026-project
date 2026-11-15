@@ -148,6 +148,21 @@ class Api {
     return (reply: reply['reply'] as String? ?? '', source: reply['source'] as String? ?? 'offline');
   }
 
+  /// Athena Live: a question about one camera picture (JPEG, base64).
+  /// The server asks Groq and does not store the picture.
+  Future<({String reply, String source})> athenaLook({
+    required String imageBase64,
+    required String question,
+    String? previousQuestion,
+  }) async {
+    final reply = await _post(
+      '/athena/look',
+      {'image': imageBase64, 'question': question, 'previous_question': ?previousQuestion},
+      timeout: const Duration(seconds: 25),
+    );
+    return (reply: reply['reply'] as String? ?? '', source: reply['source'] as String? ?? 'offline');
+  }
+
   Future<Snapshot> state() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/state')).timeout(_timeout);

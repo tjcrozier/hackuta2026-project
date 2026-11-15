@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Cycl0ps uses the camera and LiDAR to scan the site, and to point a rescuer toward a missing worker's phone. Nothing is recorded.</string>
+	<string>Cycl0ps uses the camera and LiDAR to scan the site, to point a rescuer toward a missing worker's phone, and to show your picture on a video call with Athena. Nothing is recorded.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Cycl0ps uses motion sensors to find your floor and detect falls.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>

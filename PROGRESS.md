@@ -435,3 +435,30 @@ Updated after every phase.
 - Put a NEW Groq key in `server/.env` as `GROQ_API_KEY=...` (the one pasted in chat must be revoked).
 - Restart the server (`python run.py`) and reinstall the app on the phones.
 - A new opening line for the pitch.
+
+**Athena Live (video call inside the app)**
+- The video button next to the Athena text box (`Config.featureAthenaLive`) opens
+  `screens/athena_live_screen.dart` (`/athena/live`). It no longer needs FaceAi or port 3000.
+- Screen: the back camera fills the screen, Athena's name and call time on top, captions,
+  the three quick questions always on screen ("What is this?", "Can I drink it?",
+  "Can I touch it?"), a text box (the keyboard's dictation key works for voice), and
+  Flip / End buttons. `camera` package added (`url_launcher` removed again).
+- Each question: the app takes one picture (medium size) and sends it to the new server
+  route `POST /athena/look`. The server asks Groq's vision model (`GROQ_VISION_MODEL`,
+  default `qwen/qwen3.8-27b`, the only model on our key that reads pictures; it read a
+  test BLEACH label correctly in under a second) with the Groq key from `server/.env`.
+  The key never goes on the phone. Pictures are not stored. Microphone never used.
+- Voice: Athena reads each answer out loud with Apple's built-in text-to-speech
+  (`AVSpeechSynthesizer`), through `VoiceService` in `ios/Runner/AppDelegate.swift`
+  (channel `blackbox/voice`) and `lib/services/voice.dart`. No package: `flutter_tts` was
+  tried first but needs CocoaPods, which this Mac does not have; the user chose this way.
+  It speaks even with the silent switch on, lowers music while talking, and stops on a new
+  question or End. Replay and Mute buttons on the iPhone only; the web call is captions
+  only. No audio leaves the phone. No site data is given to Athena Live.
+- Privacy wording: worker box says "The camera is on only during a video call with
+  Athena that you start. Nothing is recorded." CLAUDE.md / AGENTS.md section 6 updated.
+- Checks: see the end of this section.
+- Checks: flutter analyze clean, 49 app tests pass (1 new), 68 server tests pass (5 new),
+  ruff clean. `/athena/look` answered a test BLEACH picture correctly through the real
+  server and Groq (about 1 s). Web build done. Installed on Sajid's iPhone 17 Pro Max.
+  NOT checked: opening the call on the iPhone (camera permission, picture quality).
